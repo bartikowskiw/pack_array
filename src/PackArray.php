@@ -1,4 +1,8 @@
 <?php
+/**
+ * Class Umlts\PackArray\PackArray
+ *
+ */
 
 declare( strict_types = 1 );
 namespace Umlts\PackArray;
@@ -72,9 +76,11 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
     }
 
     /**
+     * Returns the number of elements in the array.
+     * Also implements the count() method for the Countable interface.
+     *
      * @return int
-     *   Returns the number of elements in the array. Also implements
-     *   the count() method for the Countable interface.
+     *   Returns number of elements
      */
     public function count() : int {
         return $this->length;
@@ -145,11 +151,13 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
     /**
      * Returns element at given position.
      *
+     * @param int $i
+     *   Index
      * @returns int
      *   Returns element
      */
     public function get( int $i ) : int {
-        return $this->goto( $i )->read();
+        return $this->gotoIndex( $i )->read();
     }
 
     /**
@@ -159,7 +167,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      *   Returns last element
      */
     public function last() {
-        return $this->goto( $this->count() - 1 )->read();
+        return $this->gotoIndex( $this->count() - 1 )->read();
     }
 
     /**
@@ -169,7 +177,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      *   Returns first element
      */
     public function first() : int {
-        return $this->goto( 0 )->read();
+        return $this->gotoIndex( 0 )->read();
     }
 
     /**
@@ -182,7 +190,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      * @returns self
      */
     public function set( int $i, int $v ) : self {
-        $this->goto( $i )->write( $v );
+        $this->gotoIndex( $i )->write( $v );
         return $this;
     }
 
@@ -215,6 +223,8 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
     /*
      * Reads $l integers from the current stream position.
      *
+     * @param int $l
+     *   Number of elements to read
      * @returns int
      */
     private function readMulti( int $l ) : array {
@@ -267,9 +277,9 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      * Moves stream pointer to the position of the given index.
      *
      * @param int $i
-     * @returns self
+     * @return self
      */
-    private function goto( int $i ) : self {
+    private function gotoIndex( int $i ) : self {
         $this->checkIndex( $i );
         fseek( $this->fp, $this::PACK_BYTES * $i );
         return $this;
@@ -293,7 +303,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      */
     public function toArray() : array {
         $array = [];
-        $this->goto( 0 );
+        $this->gotoIndex( 0 );
         while ( $data = $this->readMulti( 1000 ) ) {
             foreach ( $data as $v ) { $array[] = $v; }
         }

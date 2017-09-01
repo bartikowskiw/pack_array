@@ -1,4 +1,8 @@
 <?php
+/**
+ * Class Umlts\PackArray\LongLongArray
+ *
+ */
 
 declare( strict_types = 1 );
 namespace Umlts\PackArray;
