@@ -1,0 +1,22 @@
+{
+    "name": "umlts/pack_array",
+    "type": "project",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Waldemar Bartikowski",
+            "email": "bartikowskiw@missouri.edu"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Umlts\\PackArray\\": "src/"
+        }
+    },
+    "require": {
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.3"
+    }
+}
