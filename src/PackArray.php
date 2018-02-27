@@ -303,6 +303,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      */
     public function toArray() : array {
         $array = [];
+        if ( $this->length == 0 ) { return $array; }
         $this->gotoIndex( 0 );
         while ( $data = $this->readMulti( 1000 ) ) {
             foreach ( $data as $v ) { $array[] = $v; }
