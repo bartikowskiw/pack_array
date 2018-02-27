@@ -9,12 +9,20 @@ use Umlts\PackArray\LongArray;
 use Umlts\PackArray\LongLongArray;
 
 class PackArrayClass extends PackArray {}
+class ToBigIntegerTypePackArray extends PackArray {
+    const PACK_BYTES = 1024;
+}
 
 class PackArrayTest extends TestCase {
 
     public function testCanBeCreated() {
         $a = new PackArrayClass();
         $this->assertInstanceOf( PackArrayClass::class, $a );
+    }
+
+    public function testToBigIntegerException() {
+        $this->expectException( \TypeError::class );
+        $a = new ToBigIntegerTypePackArray();
     }
 
     public function testCountable() {
@@ -81,22 +89,53 @@ class PackArrayTest extends TestCase {
         $this->assertEquals( $a[1], PHP_INT_MIN );
     }
 
-    public function testExceptions() {
+    public function testExceptionIndexToBig() {
         $a = new PackArrayClass( [ 0,1,2,3 ] );
-
         $this->expectException( \OutOfBoundsException::class );
         $a->get( 10 );
+    }
 
+    public function testExceptionIndexToSmall() {
+        $a = new PackArrayClass( [ 0,1,2,3 ] );
         $this->expectException( \OutOfBoundsException::class );
         $a->get( -10 );
+    }
 
+    public function testExceptionSetToInvalidIndex() {
+        $a = new PackArrayClass( [ 0,1,2,3 ] );
         $this->expectException( \OutOfBoundsException::class );
-        $a->set( 10 );
+        $a->set( 10, 123 );
+    }
 
-        $this->expectException( \OutOfBoundsException::class );
-        $a->remove( 10 );
-
+    public function testExceptionSetToInvalidIndexInArrayNotation() {
+        $a = new PackArrayClass( [ 0,1,2,3 ] );
         $this->expectException( \OutOfBoundsException::class );
         $a[10] = 1;
     }
+
+    public function testExceptionRemoveFromInvalidIndex() {
+        $a = new PackArrayClass( [ 0,1,2,3 ] );
+        $this->expectException( \OutOfBoundsException::class );
+        $a->remove( 10 );
+    }
+
+    public function testExceptionReadMultiOutOfBounds() {
+        $a = new PackArrayClass( [ 0,1,2,3 ] );
+        $this->expectException( \OutOfBoundsException::class );
+        // Call the private function readMulti
+        $reflection = new \ReflectionClass( get_class( $a ) );
+        $method = $reflection->getMethod( 'readMulti' );
+        $method->setAccessible( true );
+        $method->invokeArgs( $a, [ 100 ] );
+        $method->invokeArgs( $a, [ 100 ] );
+    }
+
+    public function testToString() {
+        $a = new PackArrayClass( [ 1, 2, 43, 2, 7 ] );
+        $this->assertEquals(
+            trim( (string) $a ),
+            'PackArrayClass[ 1, 2, 43, 2, 7 ]'
+        );
+    }
+
 }
