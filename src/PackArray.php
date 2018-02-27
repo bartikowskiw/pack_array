@@ -57,9 +57,10 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
     public function __construct( array $array = [], string $path = 'php://temp/maxmemory:20000000' ) {
 
         if ( $this::PACK_BYTES > PHP_INT_SIZE ) {
-            trigger_error(
-                'Cannot construct ' . get_class( $this ) . ': Your system and / or PHP version does not support ' . $this::PACK_BYTES * 8 . ' bit integers.',
-                E_USER_ERROR
+            throw new \TypeError(
+                'Cannot construct ' . get_class( $this )
+                . ': Your system and / or PHP version does not support '
+                . $this::PACK_BYTES * 8 . ' bit integers.'
             );
         }
 
