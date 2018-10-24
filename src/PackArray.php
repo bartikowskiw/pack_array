@@ -11,7 +11,7 @@ namespace Umlts\PackArray;
  * Array of Integers saved in memory.
  *
  * Compared to native arrays or SplFixedArrays it is quite slow. The
- * upside is it's very low memory usage. Especially compared to normal
+ * upside is its very low memory usage. Especially compared to normal
  * arrays.
  */
 abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
