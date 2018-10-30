@@ -64,7 +64,12 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
             );
         }
 
-        $this->fp = fopen( $path, 'r+' );
+        $fp = fopen( $path, 'r+' );
+        if ( $fp === false ) {
+            throw new \RuntimeException( 'Could not open "' . $path . '".' );
+        }
+
+        $this->fp = $fp;
         foreach ( $array as $v ) { $this->push( $v ); }
     }
 
@@ -243,7 +248,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      * @returns self
      */
     private function write( int $v ) : self {
-        fwrite( $this->fp, pack( $this::PACK_FORMAT, (int) $v ) );
+        fwrite( $this->fp, pack( $this::PACK_FORMAT, $v ) );
         return $this;
     }
 
@@ -264,7 +269,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      *
      * @param int $i
      *   Index to check
-     * @throws OutOfBoundsException
+     * @throws \OutOfBoundsException
      */
     private function checkIndex( int $i ) : self{
         if ( !$this->validIndex( $i ) ) {
@@ -304,10 +309,14 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
      */
     public function toArray() : array {
         $array = [];
-        if ( $this->length == 0 ) { return $array; }
+        $left = $this->length;
+        if ( $left == 0 ) { return $array; }
+
         $this->gotoIndex( 0 );
-        while ( $data = $this->readMulti( 1000 ) ) {
+        while ( $left > 0 ) {
+            $data = $this->readMulti( 1000 );
             foreach ( $data as $v ) { $array[] = $v; }
+            $left -= count( $data );
         }
         return $array;
     }
@@ -346,7 +355,7 @@ abstract class PackArray implements \Iterator, \Countable, \ArrayAccess {
     // @see https://secure.php.net/manual/en/class.arrayaccess.php
     // -----------------------------------------------------------------
 
-    public function offsetExists( $offset ) : boolean { return $this->validIndex( $offset ); }
+    public function offsetExists( $offset ) : bool { return $this->validIndex( $offset ); }
     public function offsetGet( $offset ) : int { return $this->get( $offset ); }
     public function offsetSet( $offset, $value ) {
         if ( $offset === NULL ) { // $a[] = $b;
