@@ -1,17 +1,12 @@
 <?php
 
 declare( strict_types = 1 );
+namespace Umlts\PackArray\Test;
 
 use PHPUnit\Framework\TestCase;
 use Umlts\PackArray\PackArray;
-use Umlts\PackArray\ShortArray;
-use Umlts\PackArray\LongArray;
-use Umlts\PackArray\LongLongArray;
-
-class PackArrayClass extends PackArray {}
-class ToBigIntegerTypePackArray extends PackArray {
-    const PACK_BYTES = 1024;
-}
+use Umlts\PackArray\Test\TestClass\PackArrayClass;
+use Umlts\PackArray\Test\TestClass\TooBigIntegerTypePackArray;
 
 class PackArrayTest extends TestCase {
 
@@ -20,9 +15,9 @@ class PackArrayTest extends TestCase {
         $this->assertInstanceOf( PackArrayClass::class, $a );
     }
 
-    public function testToBigIntegerException() {
+    public function testTooBigIntegerException() {
         $this->expectException( \TypeError::class );
-        $a = new ToBigIntegerTypePackArray();
+        $a = new TooBigIntegerTypePackArray();
     }
 
     public function testCountable() {
@@ -134,7 +129,7 @@ class PackArrayTest extends TestCase {
         $a = new PackArrayClass( [ 1, 2, 43, 2, 7 ] );
         $this->assertEquals(
             trim( (string) $a ),
-            'PackArrayClass[ 1, 2, 43, 2, 7 ]'
+            PackArrayClass::class . '[ 1, 2, 43, 2, 7 ]'
         );
     }
 

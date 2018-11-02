@@ -1,10 +1,10 @@
 <?php
 
 declare( strict_types = 1 );
+namespace Umlts\PackArray\Test;
 
-use PHPUnit\Framework\TestCase;
-use Umlts\PackArray\LongLongArray;
-
+use \PHPUnit\Framework\TestCase;
+use \Umlts\PackArray\LongLongArray;
 
 class LongLongArrayTest extends TestCase {
 
